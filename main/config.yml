@@ -1,9 +1,9 @@
-package_trust_rule:
+repo_trust_rule:
   author_rule:
     - age: 2 # at least 'n' years on github
       repos: 2 # at least 'n' repos of the author
       followers: 10 # at least 'n' followers
-      contributors: 100  # at least contributions in 'n' open-source projects
+      contributions: 100 # at least contributions in 'n' open-source projects
   repo_rule:
     - stars: 100 # at least 'n' stars
       forks: 2 # at least 'n' forks
@@ -13,6 +13,3 @@ package_trust_rule:
       last_release: 30 # days
   commit_rule:
     - last_commit_age: 10
-
-  
-

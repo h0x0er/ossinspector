@@ -7,13 +7,13 @@ import (
 )
 
 type Config struct {
-	PackageTrustRule PackageTrustRule `yaml:"package_trust_rule"`
+	RepoTrustRule PackageTrustRule `yaml:"repo_trust_rule"`
 }
 type AuthorRule struct {
-	Age          int `yaml:"age"`
-	Repos        int `yaml:"repos"`
-	Followers    int `yaml:"followers"`
-	Contributors int `yaml:"contributors"`
+	Age           int `yaml:"age"`
+	Repos         int `yaml:"repos"`
+	Followers     int `yaml:"followers"`
+	Contributions int `yaml:"contributions"`
 }
 type RepoRule struct {
 	Stars        int `yaml:"stars"`
@@ -27,8 +27,8 @@ type CommitRule struct {
 	LastCommitAge int `yaml:"last_commit_age"`
 }
 type PackageTrustRule struct {
-	AuthorRules  []AuthorRule  `yaml:"author_rule"`
-	RepoRules    []RepoRule    `yaml:"repo_rule"`
+	AuthorRules []AuthorRule `yaml:"author_rule"`
+	RepoRules   []RepoRule   `yaml:"repo_rule"`
 	CommitRules []CommitRule `yaml:"commit_rules"`
 }
 
