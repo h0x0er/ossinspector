@@ -13,7 +13,7 @@ func Test_evaluate(t *testing.T) {
 		want1 int
 	}{
 		// TODO: Add test cases.
-		// {name: "test greater", args: args{val: ">100"}, want: GREATER_THAN, want1: 100},
+		{name: "test greater", args: args{val: ">100"}, want: GREATER_THAN, want1: 100},
 		{name: "test lesser", args: args{val: "<100"}, want: LESSER_THAN, want1: 100},
 	}
 	for _, tt := range tests {

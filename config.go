@@ -7,7 +7,13 @@ import (
 )
 
 type Config struct {
-	RepoTrustRule PackageTrustRule `yaml:"repo_trust_rule"`
+	TrustRules PackageTrustRule `yaml:"trust_rules"`
+}
+
+type PackageTrustRule struct {
+	AuthorRules AuthorRule `yaml:"author_rule"`
+	RepoRules   RepoRule   `yaml:"repo_rule"`
+	CommitRules CommitRule `yaml:"commit_rules"`
 }
 type AuthorRule struct {
 	Age           int `yaml:"age"`
@@ -18,7 +24,7 @@ type AuthorRule struct {
 
 // TODO: Add repo age attribute
 type RepoRule struct {
-	Stars        int `yaml:"stars"`
+	Stars int `yaml:"stars"`
 	// Age          int `yaml:age`
 	Forks        int `yaml:"forks"`
 	Watchers     int `yaml:"watchers"`
@@ -28,11 +34,6 @@ type RepoRule struct {
 }
 type CommitRule struct {
 	LastCommitAge int `yaml:"last_commit_age"`
-}
-type PackageTrustRule struct {
-	AuthorRules []AuthorRule `yaml:"author_rule"`
-	RepoRules   []RepoRule   `yaml:"repo_rule"`
-	CommitRules []CommitRule `yaml:"commit_rules"`
 }
 
 func NewConfig(path string) (*Config, error) {

@@ -36,7 +36,9 @@ type OwnerInfo struct {
 }
 
 // CommitInfo info about commits
-type CommitInfo struct{}
+type CommitInfo struct{
+	// TODO: add commit information
+}
 
 func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
 	client := getClient()
