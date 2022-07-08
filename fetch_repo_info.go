@@ -75,6 +75,10 @@ func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
 	repoInfo.OwnerInfo.UpdatedAt = user.GetUpdatedAt().Unix()
 	repoInfo.OwnerInfo.ReposCount = user.GetPublicRepos()
 
+	// TODO: Add more owner related info
+	//client.Repositories.
+
+	return &repoInfo, nil
 }
 
 func getClient() *github.Client {
