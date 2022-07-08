@@ -1,7 +1,6 @@
 package ossinspector
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
