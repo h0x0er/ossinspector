@@ -17,7 +17,7 @@ func evaluate(val string) (ConstraintType, int) {
 	var ctype ConstraintType
 	var value int
 
-	if strings.HasPrefix("<", val) {
+	if strings.Index(val, "<") == 0 {
 		s := strings.Split(val, "<")[1]
 		num, err := strconv.Atoi(s)
 		if err == nil {
@@ -27,7 +27,7 @@ func evaluate(val string) (ConstraintType, int) {
 		}
 	}
 
-	if strings.HasPrefix(">", val) {
+	if strings.Index(val, ">") == 0 {
 		s := strings.Split(val, ">")[1]
 		num, err := strconv.Atoi(s)
 		if err == nil {

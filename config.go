@@ -16,24 +16,24 @@ type PackageTrustRule struct {
 	CommitRules CommitRule `yaml:"commit_rules"`
 }
 type AuthorRule struct {
-	Age           int `yaml:"age"`
-	Repos         int `yaml:"repos"`
-	Followers     int `yaml:"followers"`
-	Contributions int `yaml:"contributions"`
+	Age           string `yaml:"age"`
+	Repos         string `yaml:"repos"`
+	Followers     string `yaml:"followers"`
+	Contributions string `yaml:"contributions"`
 }
 
 // TODO: Add repo age attribute
 type RepoRule struct {
-	Stars int `yaml:"stars"`
-	// Age          int `yaml:age`
-	Forks        int `yaml:"forks"`
-	Watchers     int `yaml:"watchers"`
-	Contributors int `yaml:"contributors"`
-	Commits      int `yaml:"commits"`
-	LastRelease  int `yaml:"last_release"`
+	Stars string `yaml:"stars"`
+	// Age          string `yaml:age`
+	Forks        string `yaml:"forks"`
+	Watchers     string `yaml:"watchers"`
+	Contributors string `yaml:"contributors"`
+	Commits      string `yaml:"commits"`
+	LastRelease  string `yaml:"last_release"`
 }
 type CommitRule struct {
-	LastCommitAge int `yaml:"last_commit_age"`
+	LastCommitAge string `yaml:"last_commit_age"`
 }
 
 func NewConfig(path string) (*Config, error) {

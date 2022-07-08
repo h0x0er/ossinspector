@@ -21,6 +21,8 @@ func main() {
 		fmt.Println(err)
 	}
 
-	log.Println("", conf)
-	ossinspector.FetchRepoInfo("step-security", "secure-workflows")
+	info, _ := ossinspector.FetchRepoInfo("step-security", "harden-runner")
+
+	ok := ossinspector.Validate(conf, info)
+	fmt.Printf("ok: %v\n", ok)
 }
