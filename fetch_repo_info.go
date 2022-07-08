@@ -51,9 +51,9 @@ func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
 		return nil, errors.New("repo doesn't exists")
 	}
 
-	user, resp, err := client.Users.Get(context.Background(), owner)
+	owner_info, _, err := client.Users.Get(context.Background(), owner)
 	if err != nil {
-		log.Fatalf("Unable to fetch user %s", owner)
+		log.Fatalf("Unable to fetch owner %s", owner)
 		return nil, err
 	}
 
@@ -71,9 +71,9 @@ func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
 	repoInfo.StaggersCount = uint(repos.GetStargazersCount())
 	repoInfo.WatcherCount = uint(repos.GetStargazersCount())
 
-	repoInfo.OwnerInfo.CreatedAt = user.GetCreatedAt().Unix()
-	repoInfo.OwnerInfo.UpdatedAt = user.GetUpdatedAt().Unix()
-	repoInfo.OwnerInfo.ReposCount = user.GetPublicRepos()
+	repoInfo.OwnerInfo.CreatedAt = owner_info.GetCreatedAt().Unix()
+	repoInfo.OwnerInfo.UpdatedAt = owner_info.GetUpdatedAt().Unix()
+	repoInfo.OwnerInfo.ReposCount = owner_info.GetPublicRepos()
 
 	// TODO: Add more owner related info
 	//client.Repositories.

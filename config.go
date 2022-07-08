@@ -15,8 +15,11 @@ type AuthorRule struct {
 	Followers     int `yaml:"followers"`
 	Contributions int `yaml:"contributions"`
 }
+
+// TODO: Add repo age attribute
 type RepoRule struct {
 	Stars        int `yaml:"stars"`
+	// Age          int `yaml:age`
 	Forks        int `yaml:"forks"`
 	Watchers     int `yaml:"watchers"`
 	Contributors int `yaml:"contributors"`
