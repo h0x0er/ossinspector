@@ -1,15 +1,16 @@
-trust_rules:
-  author_rule:
+policy:
+  author:
     age: ">2" # at least 'n' years on github
     repos: ">2" # at least 'n' repos of the author
     followers: ">10" # at least 'n' followers
     contributions: "<100" # at least contributions in 'n' open-source projects
-  repo_rule:
+  repo:
+    age: ">4"
     stars: ">1000" # at least 'n' stars
     forks: ">2" # at least 'n' forks
     watchers: ">20" # at least 'n' watchers
     contributors: ">2" # at least 'n' contributors
     commits: ">100" # at least 'n' commits
     last_release: ">30" # days
-  commit_rule:
+  commit:
     last_commit_age: "<10"

@@ -16,13 +16,13 @@ func init() {
 func main() {
 
 	pth := os.Args[1]
-	conf, err := ossinspector.NewConfig(pth)
+	policy, err := ossinspector.NewPolicy(pth)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	info, _ := ossinspector.FetchRepoInfo("step-security", "harden-runner")
 
-	ok := ossinspector.Validate(conf, info)
-	fmt.Printf("ok: %v\n", ok)
+	ok := ossinspector.Validate(policy, info)
+	fmt.Printf("policy followed: %v\n", ok)
 }

@@ -1,9 +1,9 @@
 package ossinspector
 
-func Validate(config *Config, repoInfo *RepoInfo) bool {
+func Validate(policy *Policy, repoInfo *RepoInfo) bool {
 
 	// TODO: verify repo rules
-	return validateRepoRule(&config.TrustRules.RepoRules, repoInfo)
+	return validateRepoRule(&policy.Repo, repoInfo)
 
 	//TODO; verify author rule.
 	// validateAuthorRule()
@@ -12,7 +12,7 @@ func Validate(config *Config, repoInfo *RepoInfo) bool {
 
 }
 
-func validateRepoRule(policy *RepoRule, repo *RepoInfo) bool {
+func validateRepoRule(policy *Repo, repo *RepoInfo) bool {
 
 	stars_resp := checkExpr(policy.Stars, repo.StaggersCount)
 	watcher_resp := checkExpr(policy.Watchers, repo.WatcherCount)
