@@ -50,7 +50,7 @@ func evaluate(expr string) (ConstraintType, int) {
 				ctype = MONTHS_LESSER_THAN
 			}
 
-		default:
+	
 
 		}
 
