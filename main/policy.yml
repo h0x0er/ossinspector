@@ -5,7 +5,7 @@ policy:
     followers: ">10" # at least 'n' followers
     contributions: "<100" # at least contributions in 'n' open-source projects
   repo:
-    age: ">4y"
+    age: "> 100 d"
     stars: ">1000" # at least 'n' stars
     forks: ">2" # at least 'n' forks
     watchers: ">20" # at least 'n' watchers
