@@ -18,6 +18,8 @@ func validateRepoRule(policy *Repo, repo *RepoInfo) bool {
 	watcher_resp := checkExpr(policy.Watchers, repo.WatcherCount)
 	forks_resp := checkExpr(policy.Forks, repo.ForkCount)
 
+
+	// TODO: output needed to be improved
 	return stars_resp && watcher_resp && forks_resp
 
 }

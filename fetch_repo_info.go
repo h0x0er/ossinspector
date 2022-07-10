@@ -36,30 +36,31 @@ type OwnerInfo struct {
 }
 
 // CommitInfo info about commits
-type CommitInfo struct{
+type CommitInfo struct {
 	// TODO: add commit information
 }
 
 func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
 	client := getClient()
+	repoInfo := new(RepoInfo)
+
+	addRepoInfo(client, owner, repo, repoInfo)
+	addOwnerInfo(client, owner, repoInfo)
+
+	return repoInfo, nil
+}
+func addRepoInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) error {
+
 	repos, resp, err := client.Repositories.Get(context.Background(), owner, repo)
 	if err != nil {
 		log.Fatalf("Unable to fetch package: %s/%s\n %v", owner, repo, err)
-		return nil, err
+		return err
 	}
 
 	if resp.StatusCode != 200 {
 		log.Fatalf("it seems %s/%s doesn't exists", owner, repo)
-		return nil, errors.New("repo doesn't exists")
+		return errors.New("repo doesn't exists")
 	}
-
-	owner_info, _, err := client.Users.Get(context.Background(), owner)
-	if err != nil {
-		log.Fatalf("Unable to fetch owner %s", owner)
-		return nil, err
-	}
-
-	var repoInfo RepoInfo
 
 	repoInfo.CreatedAt = repos.GetCreatedAt().Unix()
 	repoInfo.LastUpdatedAt = repos.GetUpdatedAt().Unix()
@@ -73,16 +74,38 @@ func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
 	repoInfo.StaggersCount = uint(repos.GetStargazersCount())
 	repoInfo.WatcherCount = uint(repos.GetStargazersCount())
 
+	return nil
+}
+func addOwnerInfo(client *github.Client, owner string, repoInfo *RepoInfo) error {
+	owner_info, _, err := client.Users.Get(context.Background(), owner)
+	if err != nil {
+		log.Fatalf("Unable to fetch owner %s", owner)
+		return err
+	}
 	repoInfo.OwnerInfo.CreatedAt = owner_info.GetCreatedAt().Unix()
 	repoInfo.OwnerInfo.UpdatedAt = owner_info.GetUpdatedAt().Unix()
 	repoInfo.OwnerInfo.ReposCount = owner_info.GetPublicRepos()
+	//TODO: add more owner info
+	repoInfo.OwnerInfo.FollowersCount = owner_info.GetFollowers()
 
-	// TODO: Add more owner related info
-	//client.Repositories.
-
-	return &repoInfo, nil
+	return nil
 }
 
+func addReleaseInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) error {
+
+	_, resp, err := client.Repositories.GetLatestRelease(context.Background(), owner, repo)
+	if err != nil {
+		log.Fatalf("Unable to fetch package: %s/%s\n %v", owner, repo, err)
+		return err
+	}
+
+	if resp.StatusCode != 200 {
+		log.Fatalf("it seems %s/%s doesn't exists", owner, repo)
+		return errors.New("repo doesn't exists")
+	}
+
+	return nil
+}
 func getClient() *github.Client {
 	token := os.Getenv("gh_token")
 	if token != "" {
