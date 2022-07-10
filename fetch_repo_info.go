@@ -93,7 +93,7 @@ func addOwnerInfo(client *github.Client, owner string, repoInfo *RepoInfo) error
 
 func addReleaseInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) error {
 
-	repoRelease, resp, err := client.Repositories.GetLatestRelease(context.Background(), owner, repo)
+	_, resp, err := client.Repositories.GetLatestRelease(context.Background(), owner, repo)
 	if err != nil {
 		log.Fatalf("Unable to fetch package: %s/%s\n %v", owner, repo, err)
 		return err
@@ -103,10 +103,6 @@ func addReleaseInfo(client *github.Client, owner, repo string, repoInfo *RepoInf
 		log.Fatalf("it seems %s/%s doesn't exists", owner, repo)
 		return errors.New("repo doesn't exists")
 	}
-
-	repoRelease.
-
-
 
 	return nil
 }
