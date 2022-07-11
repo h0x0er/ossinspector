@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -18,11 +17,11 @@ func main() {
 	pth := os.Args[1]
 	policy, err := ossinspector.NewPolicy(pth)
 	if err != nil {
-		log.Fatalln("Unable to parse policy file\n", err)
+		log.Fatalf("Unable to parse policy file\n%s\n", err)
 	}
-
+	log.Println("policy: ", policy)
 	info, _ := ossinspector.FetchRepoInfo("step-security", "harden-runner")
 
 	ok := ossinspector.Validate(policy, info)
-	fmt.Printf("policy followed: %v\n", ok)
+	log.Printf("policy followed: %v\n", ok)
 }

@@ -10,7 +10,8 @@ policy:
     forks: ">2" # at least 'n' forks
     watchers: ">20" # at least 'n' watchers
     contributors: ">2" # at least 'n' contributors
-    commits: ">100" # at least 'n' commits
-    last_release: ">1m" # days
   commit:
     last_commit_age: "<10d"
+    commits: ">100" # at least 'n' commits
+  release:
+    last_release: ">1m" # days
