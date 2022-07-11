@@ -18,7 +18,7 @@ func main() {
 	pth := os.Args[1]
 	policy, err := ossinspector.NewPolicy(pth)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln("Unable to parse policy file\n", err)
 	}
 
 	info, _ := ossinspector.FetchRepoInfo("step-security", "harden-runner")

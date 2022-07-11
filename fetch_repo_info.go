@@ -53,14 +53,16 @@ func addRepoInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) 
 
 	repos, resp, err := client.Repositories.Get(context.Background(), owner, repo)
 	if err != nil {
-		log.Fatalf("Unable to fetch package: %s/%s\n %v", owner, repo, err)
+		log.Printf("Unable to fetch package: %s/%s\n %v", owner, repo, err)
 		return err
 	}
 
 	if resp.StatusCode != 200 {
-		log.Fatalf("it seems %s/%s doesn't exists", owner, repo)
+		log.Printf("it seems %s/%s doesn't exists", owner, repo)
 		return errors.New("repo doesn't exists")
 	}
+
+	contrib, _, err := client.Repositories.ListContributors(context.Background(), owner, repo, nil)
 
 	repoInfo.CreatedAt = repos.GetCreatedAt().Unix()
 	repoInfo.LastUpdatedAt = repos.GetUpdatedAt().Unix()
@@ -74,12 +76,14 @@ func addRepoInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) 
 	repoInfo.StaggersCount = uint(repos.GetStargazersCount())
 	repoInfo.WatcherCount = uint(repos.GetStargazersCount())
 
+	repoInfo.Contributors = contrib.
+
 	return nil
 }
 func addOwnerInfo(client *github.Client, owner string, repoInfo *RepoInfo) error {
 	owner_info, _, err := client.Users.Get(context.Background(), owner)
 	if err != nil {
-		log.Fatalf("Unable to fetch owner %s", owner)
+		log.Printf("Unable to fetch owner %s", owner)
 		return err
 	}
 	repoInfo.OwnerInfo.CreatedAt = owner_info.GetCreatedAt().Unix()
@@ -95,12 +99,12 @@ func addReleaseInfo(client *github.Client, owner, repo string, repoInfo *RepoInf
 
 	_, resp, err := client.Repositories.GetLatestRelease(context.Background(), owner, repo)
 	if err != nil {
-		log.Fatalf("Unable to fetch package: %s/%s\n %v", owner, repo, err)
+		log.Printf("Unable to fetch package: %s/%s\n %v", owner, repo, err)
 		return err
 	}
 
 	if resp.StatusCode != 200 {
-		log.Fatalf("it seems %s/%s doesn't exists", owner, repo)
+		log.Printf("it seems %s/%s doesn't exists", owner, repo)
 		return errors.New("repo doesn't exists")
 	}
 
