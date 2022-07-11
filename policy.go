@@ -2,7 +2,6 @@ package ossinspector
 
 import (
 	"io/ioutil"
-
 	"gopkg.in/yaml.v3"
 )
 
@@ -21,16 +20,24 @@ type Repo struct {
 	Forks        string `yaml:"forks"`
 	Watchers     string `yaml:"watchers"`
 	Contributors string `yaml:"contributors"`
-	Commits      string `yaml:"commits"`
-	LastRelease  string `yaml:"last_release"`
 }
 type Commit struct {
 	LastCommitAge string `yaml:"last_commit_age"`
+	Commits       string `yaml:"commits"`
+}
+type Release struct {
+	LastRelease string `yaml:"last_release"`
 }
 type Policy struct {
-	Author Author `yaml:"author"`
-	Repo   Repo   `yaml:"repo"`
-	Commit Commit `yaml:"commit"`
+	Author  Author  `yaml:"author"`
+	Repo    Repo    `yaml:"repo"`
+	Commit  Commit  `yaml:"commit"`
+	Release Release `yaml:"release"`
+}
+
+func (p *Policy) ToString() string {
+	bytes, _ := yaml.Marshal(p)
+	return string(bytes)
 }
 
 func NewPolicy(path string) (*Policy, error) {

@@ -7,10 +7,12 @@ import (
 )
 
 func Validate(policy *Policy, repoInfo *RepoInfo) bool {
+	response := new(Response)
 
 	// TODO: verify repo rules
-	return validateRepoRule(&policy.Repo, repoInfo)
-
+	ok := validateRepoRule(&policy.Repo, repoInfo, &response.PolicyResp.RepoResp)
+	log.Println(response.ToJson())
+	return ok
 	//TODO; verify author rule.
 	// validateAuthorRule()
 	// TODO: to verify commit rule
@@ -18,20 +20,20 @@ func Validate(policy *Policy, repoInfo *RepoInfo) bool {
 
 }
 
-func validateRepoRule(repoPolicy *Repo, repo *RepoInfo) bool {
+func validateRepoRule(repoPolicy *Repo, repo *RepoInfo, resp *RepoResp) bool {
 
-	stars_resp := checkExpr(repoPolicy.Stars, repo.StaggersCount)
-	watcher_resp := checkExpr(repoPolicy.Watchers, repo.WatcherCount)
-	forks_resp := checkExpr(repoPolicy.Forks, repo.ForkCount)
-	age_resp := checkExpr(repoPolicy.Age, uint(repo.CreatedAt))
+	resp.Stars = checkExpr(repoPolicy.Stars, repo.StaggersCount)
+	resp.Watchers = checkExpr(repoPolicy.Watchers, repo.WatcherCount)
+	resp.Watchers = checkExpr(repoPolicy.Forks, repo.ForkCount)
+	resp.Age = checkExpr(repoPolicy.Age, uint(repo.CreatedAt))
 
-	log.Printf("stars_resp: %v\n", stars_resp)
-	log.Printf("watcher_resp: %v\n", watcher_resp)
-	log.Printf("forks_resp: %v\n", forks_resp)
-	log.Printf("age_resp: %v\n", age_resp)
-	
+	log.Printf("stars_resp: %v\n", resp.Stars)
+	log.Printf("watcher_resp: %v\n", resp.Watchers)
+	log.Printf("forks_resp: %v\n", resp.Forks)
+	log.Printf("age_resp: %v\n", resp.Age)
+
 	// TODO: output needed to be improved
-	return stars_resp && watcher_resp && forks_resp && age_resp
+	return resp.Stars && resp.Watchers && resp.Age && resp.Forks
 
 }
 

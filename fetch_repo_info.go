@@ -61,8 +61,8 @@ func addRepoInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) 
 		log.Printf("it seems %s/%s doesn't exists", owner, repo)
 		return errors.New("repo doesn't exists")
 	}
-
-	contrib, _, err := client.Repositories.ListContributors(context.Background(), owner, repo, nil)
+	// NOTE: unable to fetch total contributor
+	// contrib, _, err := client.Repositories.ListContributors(context.Background(), owner, repo, nil)
 
 	repoInfo.CreatedAt = repos.GetCreatedAt().Unix()
 	repoInfo.LastUpdatedAt = repos.GetUpdatedAt().Unix()
@@ -75,8 +75,6 @@ func addRepoInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) 
 	repoInfo.ForkCount = uint(repos.GetForksCount())
 	repoInfo.StaggersCount = uint(repos.GetStargazersCount())
 	repoInfo.WatcherCount = uint(repos.GetStargazersCount())
-
-	repoInfo.Contributors = contrib.
 
 	return nil
 }
