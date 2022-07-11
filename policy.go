@@ -2,6 +2,7 @@ package ossinspector
 
 import (
 	"io/ioutil"
+
 	"gopkg.in/yaml.v3"
 )
 
@@ -9,27 +10,27 @@ type PolicyStub struct {
 	Policy Policy `yaml:"policy"`
 }
 type Author struct {
-	Age           string `yaml:"age"`
-	Repos         string `yaml:"repos"`
-	Followers     string `yaml:"followers"`
-	Contributions string `yaml:"contributions"`
+	Age           string `yaml:"age,omitempty"`
+	Repos         string `yaml:"repos,omitempty"`
+	Followers     string `yaml:"followers,omitempty"`
+	Contributions string `yaml:"contributions,omitempty"`
 }
 type Repo struct {
-	Age          string `yaml:"age"`
-	Stars        string `yaml:"stars"`
-	Forks        string `yaml:"forks"`
-	Watchers     string `yaml:"watchers"`
-	Contributors string `yaml:"contributors"`
+	Age          string `yaml:"age,omitempty"`
+	Stars        string `yaml:"stars,omitempty"`
+	Forks        string `yaml:"forks,omitempty"`
+	Watchers     string `yaml:"watchers,omitempty"`
+	Contributors string `yaml:"contributors,omitempty"`
 }
 type Commit struct {
-	LastCommitAge string `yaml:"last_commit_age"`
-	Commits       string `yaml:"commits"`
+	LastCommitAge string `yaml:"last_commit_age,omitempty"`
+	Commits       string `yaml:"commits,omitempty"`
 }
 type Release struct {
-	LastRelease string `yaml:"last_release"`
+	LastRelease string `yaml:"last_release,omitempty"`
 }
 type Policy struct {
-	Author  Author  `yaml:"author"`
+	Author  Author  `yaml:"author,omitempty"`
 	Repo    Repo    `yaml:"repo"`
 	Commit  Commit  `yaml:"commit"`
 	Release Release `yaml:"release"`
