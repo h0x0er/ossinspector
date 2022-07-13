@@ -1,11 +1,11 @@
 policy:
-  author:
-    age: ">2y" # at least 'n' years on github
-    repos: ">2" # at least 'n' repos of the author
-    followers: ">10" # at least 'n' followers
+  owner:
+    age: ">10m" # at least 'n' years on github
+    repos: ">3" # at least 'n' repos of the author
+    followers: ">5" # at least 'n' followers
     contributions: "<100" # at least contributions in 'n' open-source projects
   repo:
-    age: "> 100 d"
+    age: "> 9 y"
     stars: ">1000" # at least 'n' stars
     forks: ">2" # at least 'n' forks
     watchers: ">20" # at least 'n' watchers

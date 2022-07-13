@@ -3,6 +3,7 @@ package ossinspector
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 
@@ -88,8 +89,8 @@ func addOwnerInfo(client *github.Client, owner string, repoInfo *RepoInfo) error
 	repoInfo.OwnerInfo.UpdatedAt = owner_info.GetUpdatedAt().Unix()
 	repoInfo.OwnerInfo.ReposCount = owner_info.GetPublicRepos()
 	//TODO: add more owner info
-	repoInfo.OwnerInfo.FollowersCount = owner_info.GetFollowers()
-
+	repoInfo.OwnerInfo.FollowersCount = getFollowerCounts(client, owner)
+	fmt.Printf("owner_info.GetFollowers(): %v\n", repoInfo.OwnerInfo.FollowersCount)
 	return nil
 }
 
@@ -120,4 +121,23 @@ func getClient() *github.Client {
 	client := github.NewClient(nil)
 	return client
 
+}
+
+func getFollowerCounts(client *github.Client, user string) int {
+	count := 0
+
+	page := 1
+	for {
+		resp, _, err := client.Users.ListFollowers(context.Background(), user, &github.ListOptions{Page: page, PerPage: 100})
+		if err == nil {
+			l := len(resp)
+			count += l
+			if l < 100 {
+				break
+			}
+			page += 1
+		}
+	}
+
+	return count
 }
