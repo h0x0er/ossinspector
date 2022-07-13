@@ -12,7 +12,7 @@ func Validate(policy *Policy, repoInfo *RepoInfo) bool {
 	// TODO: verify repo rules
 	ok := validateRepoRule(&policy.Repo, repoInfo, &response.PolicyResp.RepoResp)
 	//TODO; verify author rule.
-	validateAuthorRule(&policy.Author, &repoInfo.OwnerInfo, &response.PolicyResp.AuthorResp)
+	validateAuthorRule(&policy.Owner, &repoInfo.OwnerInfo, &response.PolicyResp.AuthorResp)
 
 	log.Println(response.ToJson())
 	return ok
