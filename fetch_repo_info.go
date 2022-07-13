@@ -23,8 +23,9 @@ type RepoInfo struct {
 	WatcherCount  uint
 	ForkCount     uint
 
-	OwnerInfo  OwnerInfo
-	CommitInfo CommitInfo
+	OwnerInfo   OwnerInfo
+	CommitInfo  CommitInfo
+	ReleaseInfo ReleaseInfo
 }
 
 // OwnerInfo info about actual creator of the repo.
@@ -39,6 +40,13 @@ type OwnerInfo struct {
 // CommitInfo info about commits
 type CommitInfo struct {
 	// TODO: add commit information
+	LastCommitAt int64
+	TotalCommits int64
+}
+
+// ReleaseInfo
+type ReleaseInfo struct {
+	LastReleaseAt int64
 }
 
 func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
