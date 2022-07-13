@@ -30,7 +30,7 @@ type Release struct {
 	LastRelease string `yaml:"last_release,omitempty"`
 }
 type Policy struct {
-	Author  Owner  `yaml:"owner,omitempty"`
+	Owner  Owner  `yaml:"owner,omitempty"`
 	Repo    Repo    `yaml:"repo"`
 	Commit  Commit  `yaml:"commit"`
 	Release Release `yaml:"release"`
