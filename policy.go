@@ -9,7 +9,7 @@ import (
 type PolicyStub struct {
 	Policy Policy `yaml:"policy"`
 }
-type Author struct {
+type Owner struct {
 	Age           string `yaml:"age,omitempty"`
 	Repos         string `yaml:"repos,omitempty"`
 	Followers     string `yaml:"followers,omitempty"`
@@ -30,7 +30,7 @@ type Release struct {
 	LastRelease string `yaml:"last_release,omitempty"`
 }
 type Policy struct {
-	Author  Author  `yaml:"author,omitempty"`
+	Author  Owner  `yaml:"owner,omitempty"`
 	Repo    Repo    `yaml:"repo"`
 	Commit  Commit  `yaml:"commit"`
 	Release Release `yaml:"release"`
