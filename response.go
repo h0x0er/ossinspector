@@ -20,7 +20,7 @@ type RepoResp struct {
 	Stars        bool `yaml:"stars" json:"stars"`
 	Forks        bool `yaml:"forks" json:"forks"`
 	Watchers     bool `yaml:"watchers" json:"watchers"`
-	Contributors bool `yaml:"contributors" json:""`
+	Contributors bool `yaml:"contributors" json:"contributors"`
 }
 type CommitResp struct {
 	LastCommitAge bool `yaml:"last_commit_age" json:"last_commit_age"`
@@ -42,6 +42,6 @@ func (p *Response) ToYaml() string {
 }
 
 func (p *Response) ToJson() string {
-	bytes, _ := json.Marshal(p)
+	bytes, _ := json.MarshalIndent(p, "", " ")
 	return string(bytes)
 }
