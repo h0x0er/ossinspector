@@ -40,12 +40,13 @@ type OwnerInfo struct {
 type CommitInfo struct {
 	// TODO: add commit information
 	LastCommitAt int64
-	TotalCommits int64
+	TotalCommits int64 // TODO: still need to fetch total commits
 }
 
 // ReleaseInfo
 type ReleaseInfo struct {
 	LastReleaseAt int64
+	LastCreatedAt int64
 }
 
 func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
@@ -56,7 +57,17 @@ func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = addOwnerInfo(client, owner, repoInfo)	
+	err = addOwnerInfo(client, owner, repoInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	err = addReleaseInfo(client, owner, repo, &repoInfo.ReleaseInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	err = addCommitInfo(client, owner, repo, &repoInfo.CommitInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -105,9 +116,9 @@ func addOwnerInfo(client *github.Client, owner string, repoInfo *RepoInfo) error
 	return nil
 }
 
-func addReleaseInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) error {
+func addReleaseInfo(client *github.Client, owner, repo string, releaseInfo *ReleaseInfo) error {
 
-	_, resp, err := client.Repositories.GetLatestRelease(context.Background(), owner, repo)
+	release, resp, err := client.Repositories.GetLatestRelease(context.Background(), owner, repo)
 	if err != nil {
 		logger.Printf("Unable to fetch package: %s/%s\n %v", owner, repo, err)
 		return err
@@ -117,9 +128,30 @@ func addReleaseInfo(client *github.Client, owner, repo string, repoInfo *RepoInf
 		logger.Printf("it seems %s/%s doesn't exists", owner, repo)
 		return errors.New("repo doesn't exists")
 	}
+	releaseInfo.LastCreatedAt = release.GetCreatedAt().Unix()
+	releaseInfo.LastReleaseAt = release.GetPublishedAt().Unix()
+	return nil
+}
+func addCommitInfo(client *github.Client, owner, repo string, commitInfo *CommitInfo) error {
+	// NOTE: fetches information related commit
+	commits, resp, err := client.Repositories.ListCommits(context.Background(), owner, repo, nil)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != 200 {
+		logger.Printf("unable to fetch commits for %s/%s", owner, repo)
+		return errors.New("unable to fetch commits")
+	}
+	for _, rc := range commits {
+		// we are only interested in first commit
+		commitInfo.LastCommitAt = rc.GetCommit().Author.Date.Unix()
+		logger.Printf("commitInfo.SHA: %v\n", rc.GetSHA())
+		break
+	}
 
 	return nil
 }
+
 func getClient() *github.Client {
 	token := os.Getenv("gh_token")
 	if token != "" {
