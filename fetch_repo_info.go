@@ -46,6 +46,7 @@ type CommitInfo struct {
 // ReleaseInfo
 type ReleaseInfo struct {
 	LastReleaseAt int64
+	LastCreatedAt int64 
 }
 
 func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
@@ -61,6 +62,10 @@ func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
 		return nil, err
 	}
 
+	err = addReleaseInfo(client, owner, repo, &repoInfo.ReleaseInfo)
+	if err != nil{
+		return nil, err
+	}
 	return repoInfo, nil
 }
 func addRepoInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) error {
@@ -105,9 +110,9 @@ func addOwnerInfo(client *github.Client, owner string, repoInfo *RepoInfo) error
 	return nil
 }
 
-func addReleaseInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) error {
+func addReleaseInfo(client *github.Client, owner, repo string, releaseInfo *ReleaseInfo) error {
 
-	_, resp, err := client.Repositories.GetLatestRelease(context.Background(), owner, repo)
+	release, resp, err := client.Repositories.GetLatestRelease(context.Background(), owner, repo)
 	if err != nil {
 		logger.Printf("Unable to fetch package: %s/%s\n %v", owner, repo, err)
 		return err
@@ -117,7 +122,8 @@ func addReleaseInfo(client *github.Client, owner, repo string, repoInfo *RepoInf
 		logger.Printf("it seems %s/%s doesn't exists", owner, repo)
 		return errors.New("repo doesn't exists")
 	}
-
+	releaseInfo.LastCreatedAt = release.GetCreatedAt().Unix()
+	releaseInfo.LastReleaseAt = release.GetPublishedAt().Unix()
 	return nil
 }
 func getClient() *github.Client {
