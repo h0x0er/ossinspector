@@ -5,13 +5,13 @@ policy:
     followers: ">5" # at least 'n' followers
     contributions: "<100" # at least contributions in 'n' open-source projects
   repo:
-    age: "> 10 m"
+    age: "> 7 m"
     stars: ">50"  # at least 'n' stars
     forks: ">2" # at least 'n' forks
     watchers: ">20" # at least 'n' watchers
     contributors: ">2" # at least 'n' contributors
   commit:
-    last_commit_age: "<10d"
+    last_commit_age: "<20d"
     commits: ">100" # at least 'n' commits
   release:
-    last_release: ">1m" # days
+    last_release: "< 30 d" # days
