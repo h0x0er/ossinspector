@@ -40,13 +40,13 @@ type OwnerInfo struct {
 type CommitInfo struct {
 	// TODO: add commit information
 	LastCommitAt int64
-	TotalCommits int64
+	TotalCommits int64 // TODO: still need to fetch total commits
 }
 
 // ReleaseInfo
 type ReleaseInfo struct {
 	LastReleaseAt int64
-	LastCreatedAt int64 
+	LastCreatedAt int64
 }
 
 func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
@@ -63,9 +63,15 @@ func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
 	}
 
 	err = addReleaseInfo(client, owner, repo, &repoInfo.ReleaseInfo)
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
+
+	err = addCommitInfo(client, owner, repo, &repoInfo.CommitInfo)
+	if err != nil {
+		return nil, err
+	}
+
 	return repoInfo, nil
 }
 func addRepoInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) error {
@@ -128,7 +134,15 @@ func addReleaseInfo(client *github.Client, owner, repo string, releaseInfo *Rele
 }
 func addCommitInfo(client *github.Client, owner, repo string, commitInfo *CommitInfo) error {
 	// NOTE: fetches information related commit
-	client.Repositories.
+	commits, resp, err := client.Repositories.ListCommits(context.Background(), owner, repo, nil)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != 200 {
+		logger.Printf("unable to fetch commits for %s/%s", owner, repo)
+		return errors.New("unable to fetch commits")
+	}
+	commitInfo.LastCommitAt = commits[0].GetAuthor().CreatedAt.Unix()
 	return nil
 }
 
