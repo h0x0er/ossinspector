@@ -56,7 +56,7 @@ func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = addOwnerInfo(client, owner, repoInfo)	
+	err = addOwnerInfo(client, owner, repoInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -120,6 +120,12 @@ func addReleaseInfo(client *github.Client, owner, repo string, repoInfo *RepoInf
 
 	return nil
 }
+func addCommitInfo(client *github.Client, owner, repo string, commitInfo *CommitInfo) error {
+	// NOTE: fetches information related commit
+	client.Repositories.
+	return nil
+}
+
 func getClient() *github.Client {
 	token := os.Getenv("gh_token")
 	if token != "" {
