@@ -9,11 +9,11 @@ import (
 type Response struct {
 	PolicyResp PolicyResp `yaml:"policy_response" json:"policy_response"`
 }
-type AuthorResp struct {
-	Age           bool `yaml:"age" json:"age"`
-	Repos         bool `yaml:"repos" json:"repos"`
-	Followers     bool `yaml:"followers" json:"followers"`
-	Contributions bool `yaml:"contributions" json:"contributions"`
+type OwnerResp struct {
+	Age       bool `yaml:"age" json:"age"`
+	Repos     bool `yaml:"repos" json:"repos"`
+	Followers bool `yaml:"followers" json:"followers"`
+	// Contributions bool `yaml:"contributions" json:"contributions"`
 }
 type RepoResp struct {
 	Age          bool `yaml:"age" json:"age"`
@@ -24,13 +24,13 @@ type RepoResp struct {
 }
 type CommitResp struct {
 	LastCommitAge bool `yaml:"last_commit_age" json:"last_commit_age"`
-	Commits       bool `yaml:"commits" json:"commits"`
+	// Commits       bool `yaml:"commits" json:"commits"`
 }
 type ReleaseResp struct {
 	LastRelease bool `yaml:"last_release" json:"last_release"`
 }
 type PolicyResp struct {
-	AuthorResp  AuthorResp  `yaml:"author" json:"author"`
+	OwnerResp   OwnerResp   `yaml:"owner" json:"owner"`
 	RepoResp    RepoResp    `yaml:"repo" json:"repo"`
 	CommitResp  CommitResp  `yaml:"commit" json:"commit"`
 	ReleaseResp ReleaseResp `yaml:"release" json:"release"`
