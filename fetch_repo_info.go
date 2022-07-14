@@ -142,7 +142,14 @@ func addCommitInfo(client *github.Client, owner, repo string, commitInfo *Commit
 		logger.Printf("unable to fetch commits for %s/%s", owner, repo)
 		return errors.New("unable to fetch commits")
 	}
-	commitInfo.LastCommitAt = commits[0].GetAuthor().CreatedAt.Unix()
+	logger.Println(len(commits))
+	for _, rc := range commits {
+		// we are only interested in first commit
+		commitInfo.LastCommitAt = rc.GetAuthor().GetCreatedAt().Unix()
+		logger.Printf("commits[0].GetSHA(): %v\n", rc.GetSHA())
+		break
+	}
+
 	return nil
 }
 
