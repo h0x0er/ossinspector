@@ -1,6 +1,7 @@
 package ossinspector
 
 import (
+	"errors"
 	"io/ioutil"
 
 	"gopkg.in/yaml.v3"
@@ -30,7 +31,7 @@ type Release struct {
 	LastRelease string `yaml:"last_release,omitempty"`
 }
 type Policy struct {
-	Owner  Owner  `yaml:"owner,omitempty"`
+	Owner   Owner   `yaml:"owner,omitempty"`
 	Repo    Repo    `yaml:"repo"`
 	Commit  Commit  `yaml:"commit"`
 	Release Release `yaml:"release"`
@@ -39,6 +40,26 @@ type Policy struct {
 func (p *Policy) ToString() string {
 	bytes, _ := yaml.Marshal(p)
 	return string(bytes)
+}
+
+func (p *Policy) isValid() (bool, error) {
+	if !isAge(p.Owner.Age) {
+		return false, errors.New("owner.age is not valid")
+	}
+
+	if !isAge(p.Repo.Age) {
+		return false, errors.New("repo.age is not valid")
+	}
+
+	if !isAge(p.Commit.LastCommitAge) {
+		return false, errors.New("commit.age is not valid")
+	}
+
+	if !isAge(p.Release.LastRelease) {
+		return false, errors.New("release.last_release is not valid")
+	}
+
+	return true, nil
 }
 
 func NewPolicy(path string) (*Policy, error) {
@@ -51,6 +72,11 @@ func NewPolicy(path string) (*Policy, error) {
 	if err != nil {
 		return nil, err
 	}
+	policy := &pstub.Policy
+	ok, err := policy.isValid()
+	if !ok{
+		return nil, err
+	}
 
-	return &pstub.Policy, nil
+	return policy, nil
 }

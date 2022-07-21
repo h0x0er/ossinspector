@@ -81,7 +81,7 @@ func checkExpr(checkString string, value uint) (bool, int) {
 		current := uint(time.Now().Unix())
 		diff := current - value
 		days := (diff / (60 * 60 * 24))
-		resp = (days < uint(pvalue))
+		resp = (days <= uint(pvalue))
 		value = days
 
 	case DAYS_GREATER_THAN:
@@ -95,7 +95,7 @@ func checkExpr(checkString string, value uint) (bool, int) {
 		current := uint(time.Now().Unix())
 		diff := (current - value)
 		months := (diff / (60 * 60 * 24 * 30))
-		resp = (months < uint(pvalue))
+		resp = (months <= uint(pvalue))
 		value = months
 
 	case MONTHS_GREATER_THAN:
@@ -109,7 +109,7 @@ func checkExpr(checkString string, value uint) (bool, int) {
 		current := uint(time.Now().Unix())
 		diff := (current - value)
 		years := (diff / (60 * 60 * 24 * 30 * 12))
-		resp = (years < uint(pvalue))
+		resp = (years <= uint(pvalue))
 		value = years
 
 	case YEARS_GREATER_THAN:
