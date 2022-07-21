@@ -3,7 +3,6 @@ policy:
     age: ">10 m" # at least 'n' years on github
     repos: ">3" # at least 'n' repos of the author
     followers: ">5" # at least 'n' followers
-    contributions: "<100" # at least contributions in 'n' open-source projects
   repo:
     age: "> 7 m"
     stars: ">50"  # at least 'n' stars
@@ -12,6 +11,5 @@ policy:
     contributors: ">2" # at least 'n' contributors
   commit:
     last_commit_age: "<20d"
-    commits: ">100" # at least 'n' commits
   release:
-    last_release: "< 30 d" # days
+    last_release: "< 13 d" # days

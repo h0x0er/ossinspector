@@ -27,8 +27,8 @@ func init() {
 func main() {
 	options := new(Options)
 
-	flag.StringVar(&options.policy, "policy", "policy.yml", "location of policy.yml file")
-	flag.StringVar(&options.policy, "p", "policy.yml", "location of policy.yml file")
+	flag.StringVar(&options.policy, "policy", "policy.yml", "location of policy.yml file (default is current directory)")
+	flag.StringVar(&options.policy, "p", "policy.yml", "location of policy.yml file (default is current directory)")
 	flag.BoolVar(&options.verbose, "verbose", false, "enable verbose response")
 	flag.BoolVar(&options.verbose, "v", false, "enable verbose response")
 	flag.StringVar(&options.repo, "repo", "facebook/react", "repository to inspect")
@@ -43,19 +43,18 @@ func main() {
 	policy, err := ossinspector.NewPolicy(options.policy)
 	if err != nil {
 		logger.Printf("Unable to parse policy file\n%s\n", err)
-		fmt.Printf("err: %v\n", err)
-		os.Exit(-1)
-
+		fmt.Println("policy_file:", err)
+		os.Exit(0)
 	}
-	logger.Println("policy: ", policy)
+	logger.Println("Policy: ", policy)
 
 	repo := strings.Split(options.repo, "/")
-	logger.Printf("Performing policy check on %s/%s", repo[0], repo[1])
+	logger.Printf("[*] Policy Check [%s/%s]", repo[0], repo[1])
 	info, err := ossinspector.FetchRepoInfo(repo[0], repo[1])
 	if err != nil {
 		logger.Printf("%v", err)
 		fmt.Printf("err: %v\n", err)
-		os.Exit(-1)
+		os.Exit(0)
 	}
 
 	ok, resp := ossinspector.Validate(policy, info)
