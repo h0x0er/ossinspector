@@ -102,8 +102,6 @@ func getRepoLink(dep string) (string, error) {
 		return "", err
 	}
 
-	logger.Printf("%s --> %v\n", dep, reg.Repository.Url)
-
 	if strings.HasPrefix(reg.Repository.Url, "git+") {
 		return strings.Split(reg.Repository.Url, "+")[1], nil
 	}
