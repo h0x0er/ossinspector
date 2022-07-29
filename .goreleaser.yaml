@@ -1,0 +1,59 @@
+# .goreleaser.yaml
+builds:
+  # You can have multiple builds defined as a yaml list
+  -
+    # Path to main.go file or main package.
+    # Notice: when used with `gomod.proxy`, this must be a package.
+    #
+    # Default is `.`.
+    main: ./main
+
+    # Binary name.
+    # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
+    # Default is the name of the project directory.
+    binary: inspector
+
+    # Custom environment variables to be set during the builds.
+    # Default is empty.
+    env:
+      - CGO_ENABLED=0
+
+    # GOOS list to build for.
+    # For more info refer to: https://golang.org/doc/install/source#environment
+    # Defaults are darwin and linux.
+    goos:
+      - freebsd
+      - darwin
+      - linux
+      - windows
+
+    # GOARCH to build for.
+    # For more info refer to: https://golang.org/doc/install/source#environment
+    # Defaults are 386, amd64 and arm64.
+    goarch:
+      - amd64
+      - arm
+      - arm64
+
+    # GOARM to build for when GOARCH is arm.
+    # For more info refer to: https://golang.org/doc/install/source#environment
+    # Default is only 6.
+    goarm:
+      - 6
+      - 7
+
+    # GOAMD64 to build when GOARCH is amd64.
+    # For more info refer to: https://golang.org/doc/install/source#environment
+    # Default is only v1.
+    goamd64:
+      - v2
+      - v3
+
+
+    # List of combinations of GOOS + GOARCH + GOARM to ignore.
+    # Default is empty.
+    ignore:
+      - goarch: 386
+      - goos: linux
+      - goamd64: v4
+
