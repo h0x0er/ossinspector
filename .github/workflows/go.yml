@@ -2,7 +2,6 @@ name: Unit test
 
 on:
   push:
-    branches: [ "main", "int" ]
   pull_request:
     branches: [ "main", "int" ]
 
