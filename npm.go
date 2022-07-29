@@ -28,6 +28,7 @@ func GetNodeRepos(path string) ([]string, error) {
 			if err == nil {
 				repo, err := getRepo(link)
 				if err == nil {
+					logger.Printf("%s -->  %v\n", dep, link)
 					output = append(output, repo)
 				}
 			}
@@ -40,6 +41,7 @@ func GetNodeRepos(path string) ([]string, error) {
 			if err == nil {
 				repo, err := getRepo(link)
 				if err == nil {
+					logger.Printf("%s -->  %v\n", dep, link)
 					output = append(output, repo)
 				}
 			}
@@ -52,6 +54,7 @@ func GetNodeRepos(path string) ([]string, error) {
 			if err == nil {
 				repo, err := getRepo(link)
 				if err == nil {
+					logger.Printf("%s -->  %v\n", dep, link)
 					output = append(output, repo)
 				}
 			}
