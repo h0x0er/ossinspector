@@ -4,12 +4,11 @@ policy:
     repos: ">3" # at least 'n' repos of the author
     followers: ">5" # at least 'n' followers
   repo:
-    age: "> 7 m"
+    age: "> 5 y"
     stars: ">50"  # at least 'n' stars
     forks: ">2" # at least 'n' forks
-    watchers: ">20" # at least 'n' watchers
     contributors: ">2" # at least 'n' contributors
   commit:
     last_commit_age: "<20d"
   release:
-    last_release: "< 13 d" # days
+    last_release: "< 10 d" # days

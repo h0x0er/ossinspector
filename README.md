@@ -40,7 +40,6 @@ policy:
     age: "> 2 y"  # means repo's age must be greater than "2 years"
     stars: ">50"  
     forks: ">2"
-    watchers: ">20" 
     contributors: ">2" 
   commit:
     last_commit_age: "<20d"  # means owner's age must be less than "20 days"
@@ -76,7 +75,6 @@ Currently 3 types of respone are supported, you use `-rt` or `-resp` flag to get
    "age":"<whether_followed_policy>",
    "stars": "<whether_followed_policy>",
    "forks": "<whether_followed_policy>",
-   "watchers": "<whether_followed_policy>",
    "contributors":"<whether_followed_policy>"
   },
   "commit": {
