@@ -37,8 +37,8 @@ func validateRepoRule(repoPolicy *Repo, repo *RepoInfo, repoResp *RepoResp) bool
 	var val int
 	repoResp.Stars, val = checkExpr(repoPolicy.Stars, repo.StaggersCount)
 	logger.Printf("repoResp.Stars: %v\n", val)
-	repoResp.Watchers, val = checkExpr(repoPolicy.Watchers, repo.WatcherCount)
-	logger.Printf("repoResp.Watchers: %v\n", val)
+	// repoResp.Watchers, val = checkExpr(repoPolicy.Watchers, repo.WatcherCount)
+	// logger.Printf("repoResp.Watchers: %v\n", val)
 	repoResp.Forks, val = checkExpr(repoPolicy.Forks, repo.ForkCount)
 	logger.Printf("repoResp.Forks: %v\n", val)
 	repoResp.Age, val = checkExpr(repoPolicy.Age, uint(repo.CreatedAt))
@@ -46,7 +46,7 @@ func validateRepoRule(repoPolicy *Repo, repo *RepoInfo, repoResp *RepoResp) bool
 	repoResp.Contributors, val = checkExpr(repoPolicy.Contributors, repo.ContributorsCount)
 	logger.Printf("repoResp.Contributors: %v\n", val)
 	// NOTE: combined repoResponse to check; whether all rules were followed or not
-	return repoResp.Stars && repoResp.Watchers && repoResp.Age && repoResp.Forks
+	return repoResp.Stars && repoResp.Age && repoResp.Forks
 
 }
 
@@ -60,6 +60,11 @@ func validateCommitRule(commitPolicy *Commit, commitInfo *CommitInfo, resp *Comm
 
 func validateReleaseRule(releasePolicy *Release, releaseInfo *ReleaseInfo, resp *ReleaseResp) bool {
 	var val int
+	if releaseInfo.LastReleaseAt == 0 {
+		logger.Printf("releaseInfo.LastReleaseAt: %v\n", releaseInfo.LastReleaseAt)
+		resp.LastRelease = false
+		return resp.LastRelease
+	}
 	resp.LastRelease, val = checkExpr(releasePolicy.LastRelease, uint(releaseInfo.LastReleaseAt))
 	logger.Printf("releaseInfo.LastReleaseAt: %v\n", releaseInfo.LastReleaseAt)
 	logger.Printf("releaseInfo.LastReleaseAge: %v\n", val)
