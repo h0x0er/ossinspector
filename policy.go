@@ -17,10 +17,10 @@ type Owner struct {
 	Contributions string `yaml:"contributions,omitempty"`
 }
 type Repo struct {
-	Age          string `yaml:"age,omitempty"`
-	Stars        string `yaml:"stars,omitempty"`
-	Forks        string `yaml:"forks,omitempty"`
-	Watchers     string `yaml:"watchers,omitempty"`
+	Age   string `yaml:"age,omitempty"`
+	Stars string `yaml:"stars,omitempty"`
+	Forks string `yaml:"forks,omitempty"`
+	// Watchers     string `yaml:"watchers,omitempty"`
 	Contributors string `yaml:"contributors,omitempty"`
 }
 type Commit struct {
@@ -74,7 +74,7 @@ func NewPolicy(path string) (*Policy, error) {
 	}
 	policy := &pstub.Policy
 	ok, err := policy.isValid()
-	if !ok{
+	if !ok {
 		return nil, err
 	}
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"os"
+	"sync"
 
 	"github.com/google/go-github/v45/github"
 	"golang.org/x/oauth2"
@@ -50,33 +51,35 @@ type ReleaseInfo struct {
 }
 
 func FetchRepoInfo(owner, repo string) (*RepoInfo, error) {
-	client := getClient()
 	repoInfo := new(RepoInfo)
 	var err error
-	err = addRepoInfo(client, owner, repo, repoInfo)
+	logger.Println("*")
+	err = addRepoInfo(owner, repo, repoInfo)
 	if err != nil {
 		return nil, err
 	}
-	err = addOwnerInfo(client, owner, repoInfo)
-	if err != nil {
-		return nil, err
-	}
-
-	err = addReleaseInfo(client, owner, repo, &repoInfo.ReleaseInfo)
-	if err != nil {
-		return nil, err
-	}
-
-	err = addCommitInfo(client, owner, repo, &repoInfo.CommitInfo)
-	if err != nil {
-		return nil, err
-	}
-
+	logger.Println("**")
+	_ = addOwnerInfo(owner, repoInfo)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	logger.Println("***")
+	_ = addReleaseInfo(owner, repo, &repoInfo.ReleaseInfo)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	logger.Println("****")
+	_ = addCommitInfo(owner, repo, &repoInfo.CommitInfo)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	logger.Printf("Info fetched successfully...")
 	return repoInfo, nil
 }
-func addRepoInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) error {
-
-	repos, resp, err := client.Repositories.Get(context.Background(), owner, repo)
+func addRepoInfo(owner, repo string, repoInfo *RepoInfo) error {
+	client.Lock()
+	repos, resp, err := client.git.Repositories.Get(context.Background(), owner, repo)
+	client.Unlock()
 	if err != nil {
 		logger.Printf("Unable to fetch package: %s/%s\n %v", owner, repo, err)
 		return err
@@ -97,13 +100,15 @@ func addRepoInfo(client *github.Client, owner, repo string, repoInfo *RepoInfo) 
 
 	repoInfo.ForkCount = uint(repos.GetForksCount())
 	repoInfo.StaggersCount = uint(repos.GetStargazersCount())
-	repoInfo.WatcherCount = uint(repos.GetStargazersCount())
-	repoInfo.ContributorsCount = uint(getContributorsCount(client, owner, repo))
+	// repoInfo.WatcherCount = uint(repos.GetStargazersCount())
+	repoInfo.ContributorsCount = uint(getContributorsCount(owner, repo))
 
 	return nil
 }
-func addOwnerInfo(client *github.Client, owner string, repoInfo *RepoInfo) error {
-	owner_info, _, err := client.Users.Get(context.Background(), owner)
+func addOwnerInfo(owner string, repoInfo *RepoInfo) error {
+	client.Lock()
+	owner_info, _, err := client.git.Users.Get(context.Background(), owner)
+	client.Unlock()
 	if err != nil {
 		logger.Printf("Unable to fetch owner %s", owner)
 		return err
@@ -111,30 +116,35 @@ func addOwnerInfo(client *github.Client, owner string, repoInfo *RepoInfo) error
 	repoInfo.OwnerInfo.CreatedAt = owner_info.GetCreatedAt().Unix()
 	repoInfo.OwnerInfo.UpdatedAt = owner_info.GetUpdatedAt().Unix()
 	repoInfo.OwnerInfo.ReposCount = owner_info.GetPublicRepos()
-	repoInfo.OwnerInfo.FollowersCount = getFollowerCounts(client, owner)
+	repoInfo.OwnerInfo.FollowersCount = getFollowerCounts(owner)
 	// TODO: need to add total contribution counts of owner on github
 	return nil
 }
 
-func addReleaseInfo(client *github.Client, owner, repo string, releaseInfo *ReleaseInfo) error {
-
-	release, resp, err := client.Repositories.GetLatestRelease(context.Background(), owner, repo)
+func addReleaseInfo(owner, repo string, releaseInfo *ReleaseInfo) error {
+	client.Lock()
+	release, resp, err := client.git.Repositories.GetLatestRelease(context.Background(), owner, repo)
+	client.Unlock()
 	if err != nil {
-		logger.Printf("Unable to fetch package: %s/%s\n %v", owner, repo, err)
+		releaseInfo.LastCreatedAt = 0
+		releaseInfo.LastReleaseAt = 0
+		logger.Printf("Unable to fetch release info: %s/%s\n %v", owner, repo, err)
 		return err
 	}
 
 	if resp.StatusCode != 200 {
-		logger.Printf("it seems %s/%s doesn't exists", owner, repo)
+		logger.Printf("it seems relase info for %s/%s doesn't exists", owner, repo)
 		return errors.New("repo doesn't exists")
 	}
 	releaseInfo.LastCreatedAt = release.GetCreatedAt().Unix()
 	releaseInfo.LastReleaseAt = release.GetPublishedAt().Unix()
 	return nil
 }
-func addCommitInfo(client *github.Client, owner, repo string, commitInfo *CommitInfo) error {
+func addCommitInfo(owner, repo string, commitInfo *CommitInfo) error {
 	// NOTE: fetches information related commit
-	commits, resp, err := client.Repositories.ListCommits(context.Background(), owner, repo, nil)
+	client.Lock()
+	commits, resp, err := client.git.Repositories.ListCommits(context.Background(), owner, repo, nil)
+	client.Unlock()
 	if err != nil {
 		return err
 	}
@@ -152,31 +162,49 @@ func addCommitInfo(client *github.Client, owner, repo string, commitInfo *Commit
 	return nil
 }
 
-func getClient() *github.Client {
-	token := os.Getenv("gh_token")
-	if token != "" {
-		logger.Printf("gh_token environment variable found")
-		ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
-		tc := oauth2.NewClient(context.Background(), ts)
-		client := github.NewClient(tc)
-		return client
-	}
-	logger.Printf("gh_token environment variable not found. Setup gh_token to evade rate limiting")
-	client := github.NewClient(nil)
-	return client
-
+type ClientT struct {
+	sync.Mutex
+	git *github.Client
 }
 
-func getFollowerCounts(client *github.Client, user string) int {
+var client *ClientT
+
+func MakeClient() *ClientT {
+	if client == nil {
+		logger.Println("creating universal client")
+		token := os.Getenv("gh_token")
+		if token != "" {
+			logger.Printf("gh_token environment variable found")
+			ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
+			tc := oauth2.NewClient(context.Background(), ts)
+			git := github.NewClient(tc)
+
+			client = new(ClientT)
+			client.git = git
+			return client
+		} else {
+			logger.Printf("gh_token environment variable not found. Setup gh_token to evade rate limiting")
+			git := github.NewClient(nil)
+			client = new(ClientT)
+			client.git = git
+			return client
+		}
+
+	}
+	return client
+}
+
+func getFollowerCounts(user string) int {
 	count := 0
 
 	page := 1
 	for {
 		if count > 500 {
+			logger.Println("[!] Owner's follower are more than 500")
 			count = 99999
 			break
 		}
-		resp, _, err := client.Users.ListFollowers(context.Background(), user, &github.ListOptions{Page: page, PerPage: 100})
+		resp, _, err := client.git.Users.ListFollowers(context.Background(), user, &github.ListOptions{Page: page, PerPage: 100})
 		if err == nil {
 			l := len(resp)
 			count += l
@@ -190,7 +218,7 @@ func getFollowerCounts(client *github.Client, user string) int {
 	return count
 }
 
-func getContributorsCount(client *github.Client, owner, repo string) int {
+func getContributorsCount(owner, repo string) int {
 	count := 0
 	page := 1
 	for {
@@ -206,8 +234,9 @@ func getContributorsCount(client *github.Client, owner, repo string) int {
 			count = 99999 // setting to maximum count; so that check can be passed
 			break
 		}
-		resp, _, err := client.Repositories.ListContributors(context.Background(), owner, repo, options)
-
+		client.Lock()
+		resp, _, err := client.git.Repositories.ListContributors(context.Background(), owner, repo, options)
+		client.Unlock()
 		if err == nil {
 			c := len(resp)
 			count += c
