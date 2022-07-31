@@ -8,22 +8,34 @@ A policy based open source package inspector
 
   git clone https://github.com/h0x0er/ossinspector.git
   cd ossinspector
-  docker build -t inspector .
+  cd main
+  go build inspector.go -o ossinspector
+  ./ossinspector
  
 ```
 
 ## Usage
+  
+  * Grab latest build from [here](https://github.com/h0x0er/ossinspector/releases)
+  * Extract the file.
+  * Copy ossinspector to `/usr/loca/sbin`
 
+  1. Repo Mode
 
-```bash
-  docker run inspector -h
-```
-![image](https://user-images.githubusercontent.com/84621253/180490085-b1c9a5b3-1601-45c8-ba97-6393cfebc042.png)
-
-```bash
-  docker run inspector -policy main/policy.yml -repo facebook/react -rt json
-```
-![image](https://user-images.githubusercontent.com/84621253/180490735-3cb93a9b-1c9b-407e-a9b3-83d9c722120e.png)
+  * Create a `policy.yml` file
+  * Run the `ossinspector`
+  ```bash 
+    ossinspector -p <location_to_policy_yml> -r owner/repo -rt score
+  ```
+  2. Project Mode
+  * Create `policy.yml` file in your project folder
+  * Run inspector with below command in project mode
+  ```bash 
+  ossinspector -t TYPE
+  ```
+  > TYPE: [node, python, go...]
+  > Currently only node is supported
+  
 
 
 ## policy.yml
@@ -61,6 +73,7 @@ Currently 3 types of respone are supported, you use `-rt` or `-resp` flag to get
 |boolean-based| shows whether the policy is followed by package or not, returns either `true` or `false` | not_required |
 |json-based| shows detailed output in json format | json |
 |yaml-based| show detailed output in yaml format | yaml or yml |
+| score | show score of the repo | score |
 
 ```json
 # sample json-based response
@@ -85,4 +98,13 @@ Currently 3 types of respone are supported, you use `-rt` or `-resp` flag to get
   }
  }
 }
+```
+## Rate limiting
+Use `gh_token` environment-variable with ossinspector to avoid `rate-limting` from `github-api`
+
+
+```bash
+  # example
+  gh_token=<token_here> ossinspector -p policy.yml -r facebook/react -rt score
+
 ```
