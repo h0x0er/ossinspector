@@ -44,6 +44,5 @@ builds:
     # Default is empty.
     ignore:
       - goarch: 386
-      - goos: linux
       - goamd64: v4
 
