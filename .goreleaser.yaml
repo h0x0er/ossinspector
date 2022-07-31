@@ -11,7 +11,7 @@ builds:
     # Binary name.
     # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
     # Default is the name of the project directory.
-    binary: inspector
+    binary: ossinspector
 
     # Custom environment variables to be set during the builds.
     # Default is empty.
@@ -37,7 +37,7 @@ builds:
     # Default is only v1.
     goamd64:
       - v2
-      - v3
+   
 
 
     # List of combinations of GOOS + GOARCH + GOARM to ignore.
