@@ -4,21 +4,31 @@ on:
   push:
     tags:
       - '*'
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
 jobs:
   goreleaser:
+    permissions:
+      contents: write  # for goreleaser/goreleaser-action to create a GitHub release
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@dd2c410b088af7c0dc8046f3ac9a8f4148492a95
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
       -
         name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
         with:
           fetch-depth: 0
       -
         name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@84cbf8094393cdc5fe1fe1671ff2647332956b1a
       -
         name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v3
+        uses: goreleaser/goreleaser-action@68acf3b1adf004ac9c2f0a4259e85c5f66e99bef
         with:
           # either 'goreleaser' (default) or 'goreleaser-pro'
           distribution: goreleaser
